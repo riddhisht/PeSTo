@@ -106,9 +106,9 @@ t60_mapping = {'4meg': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0,
 
 def setup_dataset(config_data, r_types_sel):
     # set up dataset
-    dataset = Dataset("data/datasets/contacts_rr5A_64nn_8192_wat_test9_1.h5")
+    dataset = Dataset("data/datasets/RNA-SMOL/contacts_rr5A_64nn_8192_wat_test9_1.h5")
     # selected structures
-    sids_sel = np.genfromtxt("data/datasets/subunits_test18.txt", dtype=np.dtype('U'))
+    sids_sel = np.genfromtxt("data/datasets/RNA-SMOL/subunits_test18.txt", dtype=np.dtype('U'))
 
     # filter dataset
     m = select_by_sid(dataset, sids_sel) # select by sids
@@ -220,9 +220,9 @@ print(df)
 exit()
 def setup_dataset(config_data, r_types_sel):
     # set up dataset
-    dataset = Dataset("data/datasets/contacts_rr5A_64nn_8192_wat_test9_1.h5")
+    dataset = Dataset("data/datasets/RNA-SMOL/contacts_rr5A_64nn_8192_wat_test9_1.h5")
     # selected structures
-    sids_sel = np.genfromtxt("data/datasets/subunits_test9.txt", dtype=np.dtype('U'))
+    sids_sel = np.genfromtxt("data/datasets/RNA-SMOL/subunits_test9.txt", dtype=np.dtype('U'))
 
     # filter dataset
     m = select_by_sid(dataset, sids_sel) # select by sids
