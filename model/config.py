@@ -4,14 +4,18 @@ from src.data_encoding import categ_to_resnames
 
 
 config_data = {
-    'dataset_filepath': "datasets/contacts_rr5A_64nn_8192.h5",
+    'dataset_filepath': "/blue/yanjun.li/riddhishthakare/PeSTo/data/datasets/RNA-SMOL/contacts_rr5A_64nn_8192_wat_train60.h5",
+    'test18_filepath': "/blue/yanjun.li/riddhishthakare/PeSTo/data/datasets/RNA-SMOL/contacts_rr5A_64nn_8192_wat_test18.h5",
+    'test9_filepath': "/blue/yanjun.li/riddhishthakare/PeSTo/data/datasets/RNA-SMOL/contacts_rr5A_64nn_8192_wat_test9.h5",
     # 'dataset_filepath': "/tmp/"+sys.argv[-1]+"/contacts_rr5A_64nn_8192.h5",
-    'train_selection_filepath': "datasets/subunits_train_set.txt",
-    'test_selection_filepath': "datasets/subunits_test_set.txt",
+    'train_selection_filepath': "/blue/yanjun.li/riddhishthakare/PeSTo/datasets/RNA-SMOL/subunits_train60.txt",
+    'test_selection_filepath': "/blue/yanjun.li/riddhishthakare/PeSTo/datasets/RNA-SMOL/subunits_test18.txt",
+    'test9_selection_filepath': "/blue/yanjun.li/riddhishthakare/PeSTo/datasets/RNA-SMOL/subunits_test9.txt",
+
     'max_ba': 1,
     'max_size': 1024*8,
-    'min_num_res': 48,
-    'l_types': categ_to_resnames['protein'],
+    'min_num_res': 32,
+    'l_types': categ_to_resnames['rna'],
     'r_types': [
         categ_to_resnames['protein'],
         categ_to_resnames['dna']+categ_to_resnames['rna'],
@@ -70,12 +74,11 @@ config_runtime = {
     'output_dir': 'save',
     'reload': True,
     'device': 'cuda',
-    'num_epochs': 100,
+    'num_epochs': 40,
     'batch_size': 1,
     'log_step': 1024,
     'eval_step': 1024*8,
-    'eval_size': 1024,
-    'learning_rate': 1e-5,
-    'pos_weight_factor': 0.5,
+    'learning_rate': 1e-4,
+    'pos_weight_factor': 0.55,
     'comment': "",
 }

@@ -12,8 +12,8 @@
 #module load daint-gpu
 
 # copy data to local drive
-rsync -av --info=progress2 /scratch/izar/lfkrapp/atonn/data/all_biounits.tar.lz4 /tmp/$SLURM_JOB_ID/
-tar -I lz4 -xvf /tmp/$SLURM_JOB_ID/all_biounits.tar.lz4 -C /tmp/$SLURM_JOB_ID/
+rsync -av --info=progress2 /scratch/izar/lfkrapp/atonn/data/test18data.tar.lz4 /tmp/$SLURM_JOB_ID/
+tar -I lz4 -xvf /tmp/$SLURM_JOB_ID/test18data.tar.lz4 -C /tmp/$SLURM_JOB_ID/
 
 # activate anaconda
 source $HOME/miniconda3/bin/activate

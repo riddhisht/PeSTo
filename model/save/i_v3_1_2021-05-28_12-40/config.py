@@ -4,20 +4,20 @@ from src.data_encoding import categ_to_resnames
 
 
 config_data = {
-    # 'dataset_filepath': "datasets/contacts_rr5A_64nn_8192.h5",
+    # 'dataset_filepath': "datasets/contacts_rr5A_64nn_8192_wat.h5",
     'dataset_filepath': "/tmp/"+sys.argv[-1]+"/contacts_rr5A_64nn_8192.h5",
     'train_selection_filepath': "datasets/subunits_train_set.txt",
     'test_selection_filepath': "datasets/subunits_test_set.txt",
     'max_ba': 1,
     'max_size': 1024*8,
     'min_num_res': 48,
-    'l_types': categ_to_resnames['protein'],
+    'l_types': categ_to_resnames['rna'],
     'r_types': [
         categ_to_resnames['protein'],
-        # categ_to_resnames['dna']+categ_to_resnames['rna'],
-        # categ_to_resnames['ion'],
-        # categ_to_resnames['ligand'],
-        # categ_to_resnames['lipid'],
+        categ_to_resnames['dna']+categ_to_resnames['rna'],
+        categ_to_resnames['ion'],
+        categ_to_resnames['ligand'],
+        categ_to_resnames['lipid'],
     ],
     # 'r_types': [[c] for c in categ_to_resnames['protein']],
 }

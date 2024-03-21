@@ -1,0 +1,7 @@
+['2BA', '8OS', 'H4B', 'ZN', 'GE1', 'TOA', 'GLY', 'F', 'SO4', 'TEP', 'GAI', 
+'CSL', 'GTP', '0EC', 'CS', 'GND', 'CBV', 'SRY', 'TOC', 'IDG', 'CL', 'ARG', 
+'L8H', 'MIX', 'BDG', 'LLO', 'NH4', 'UMS', 'K', 'I2A', 'GE2', 'PAR', 'TOB', 
+'AM2', '6F7', 'A23', 'CA', 'NCO', 'AMP', 'GE3', 'DAI', 'MG', 'MN', 'RIB', 
+'AMZ', 'CCC', '2QC', 'IRI', 'P12', 'PA1', 'ADE', 'TPP', 'D2X', 'SFG', '5BU', 'PRF', 'P14', 'SR', 'IR3', 'NMY', 'ROS', 
+'CYY', 'NA', 'ISH', 'PMZ', 'AG2', 'PSU', 'GNG', 'P13', 'C2E', 'SAH', 'SAM', 
+'GDP', 'SS0', 'FMN', 'HOH']

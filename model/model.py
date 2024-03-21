@@ -8,14 +8,14 @@ class Model(pt.nn.Module):
         super(Model, self).__init__()
         # features encoding models for structures and library
         self.em = pt.nn.Sequential(
-            pt.nn.Linear(config['em']['N0'], config['em']['N1']),
+            pt.nn.Linear(config['em']['N0'], config['em']['N1']), #N0 - 30, N1 - 32
             pt.nn.ELU(),
             pt.nn.Linear(config['em']['N1'], config['em']['N1']),
             pt.nn.ELU(),
             pt.nn.Linear(config['em']['N1'], config['em']['N1']),
         )
         # atomic level state update model
-        self.sum = pt.nn.Sequential(*[StateUpdateLayer(layer_params) for layer_params in config['sum']])
+        self.sum = pt.nn.Sequential(*[StateUpdateLayer(layer_params) for layer_params in config['sum']])  #config sum is a list 
 
         # atomic to residue reduction layer
         self.spl = StatePoolLayer(config['spl']['N0'], config['spl']['N1'], config['spl']['Nh'])

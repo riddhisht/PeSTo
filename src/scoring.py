@@ -77,7 +77,6 @@ def nanmean(x):
 def bc_scoring(y, p):
     # prediction
     q = pt.round(p)
-
     # binary classification
     TP, TN, FP, FN, P, N = binary_classification(y, q)
 
@@ -95,6 +94,18 @@ def bc_scoring(y, p):
 
     return scores  # ['acc','ppv','npv','tpr','tnr','mcc','auc','std']
 
+def mc_scoring(y, p):
+    # prediction
+    q = pt.round(p)
+
+    TP, TN, FP, FN, P, N = binary_classification(y, q)
+    
+    
+    precision = TP / (TP + FP) if (TP + FP) != 0 else 0
+    recall = TP / (TP + FN) if (TP + FN) != 0 else 0
+    accuracy = (TP + TN) / (TP + FN + TN + FP) 
+    
+    return precision, recall, accuracy
 
 def reg_scoring(y, p):
     return {

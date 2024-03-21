@@ -15,7 +15,7 @@ pt.multiprocessing.set_sharing_strategy('file_system')
 
 config_dataset = {
     # parameters
-    "r_thr": 5.0,  # Angstroms
+    "r_thr": 8.0,  # Angstroms
     "max_num_atoms": 1024*8,
     "max_num_nn": 64,
     "molecule_ids": np.array([
@@ -24,16 +24,22 @@ config_dataset = {
         'DT', 'DG', 'DC', 'MG', 'ZN', 'CL', 'CA', 'NA', 'MN', 'K', 'IOD', 'CD', 'CU', 'FE',
         'NI', 'SR', 'BR', 'CO', 'HG', 'SO4', 'NAG', 'PO4', 'EDO', 'ACT', 'MAN', 'HEM', 'FMT',
         'BMA', 'ADP', 'FAD', 'NAD', 'NO3', 'GLC', 'ATP', 'NAP', 'BGC', 'GDP', 'FUC', 'FES',
-        'FMN', 'GAL', 'GTP', 'PLP', 'MLI', 'ANP', 'H4B', 'AMP', 'NDP', 'SAH', 'OXY', 'PLM',
-        'CLR', 'CDL', 'RET'
+        'FMN', 'GAL', 'GTP', 'PLP', 'MLI', 'ANP', 'H4B', 'AMP', 'NDP', 'SAH', 'OXY', 'MGR', 
+        'B12', 'ROS', '5BU', 'NME', 'BDR', 'NEB', 'BDG', 'IDG', 'G0B',  '2TB', 
+        'TOC', 'TOA', 'LHA', 'IU', '747', 'U37', '4BW', '2BA', '8OS', 'GE1', 
+        'TEP', 'GAI', 'CSL', '0EC', 'CS', 'GND', 'CBV', 'SRY', 'L8H',
+        'BDG', 'NH4', 'UMS', 'I2A', 'GE2', 'PAR', 'TOB', 'AM2', '6F7', 'A23', 
+        'NCO', 'GE3', 'DAI', 'RIB', 'AMZ', 'CCC', '2QC', 'IRI', 'P12', 'PA1', 'ADE', 'TPP', 'D2X', 'SFG', 
+        'PRF', 'P14', 'IR3', 'NMY', 'CYY', 'ISH', 'PMZ', 'AG2', 
+        'PSU', 'GNG', 'P13', 'C2E', 'SAM', 'SS0', 'SIS', 'PLM', 'CLR', 'CDL', 'RET',
     ]),
 
     # input filepaths
-    "pdb_filepaths": glob("data/all_biounits/*/*.pdb[0-9]*.gz"),
-    # "pdb_filepaths": glob(f"/tmp/{sys.argv[-1]}/all_biounits/*/*.pdb[0-9]*.gz"),
+
+    "pdb_filepaths": glob("data/test18data/6ez0/*.pdb[0-9]*.gz"),
 
     # output filepath
-    "dataset_filepath": "data/datasets/contacts_rr5A_64nn_8192_wat.h5",
+    "dataset_filepath": "data/datasets/contacts_rr5A_64nn_8192_wat_test9_1.h5",
     # "dataset_filepath": f"/tmp/{sys.argv[-1]}/contacts_rr5A_64nn_8192.h5",
 }
 
@@ -59,7 +65,6 @@ def contacts_types(s0, M0, s1, M1, ids, molecule_ids, device=pt.device("cpu")):
 
     return Y, T
 
-
 def pack_structure_data(X, qe, qr, qn, M, ids_topk):
     return {
         'X': X.cpu().numpy().astype(np.float32),
@@ -75,6 +80,7 @@ def pack_structure_data(X, qe, qr, qn, M, ids_topk):
 
 
 def pack_contacts_data(Y, T):
+
     return {
         'Y':pt.stack(pt.where(Y), dim=1).cpu().numpy().astype(np.uint16),
     }, {
@@ -103,9 +109,10 @@ def pack_dataset_items(subunits, contacts, molecule_ids, max_num_nn, device=pt.d
         # prepare storage
         if cid0 not in contacts_data:
             contacts_data[cid0] = {}
-
+        
         # for all contacting subunits
         for cid1 in contacts[cid0]:
+
             # prepare storage for swapped interface
             if cid1 not in contacts_data:
                 contacts_data[cid1] = {}
@@ -136,7 +143,7 @@ def pack_dataset_items(subunits, contacts, molecule_ids, max_num_nn, device=pt.d
 
                 # clear cuda cache
                 pt.cuda.empty_cache()
-
+    # print(contacts_data)
     return structures_data, contacts_data
 
 
@@ -161,8 +168,8 @@ def store_dataset_items(hf, pdbid, bid, structures_data, contacts_data):
             # save contacts data
             hgrp = hf.create_group(f"data/contacts/{ckey}")
             save_data(hgrp, attrs=contacts_data[cid0][cid1][1], **contacts_data[cid0][cid1][0])
-
             # store metadata
+
             metadata_l.append({
                 'key': key,
                 'size': (np.max(structures_data[cid0][0]["M"], axis=0)+1).astype(int),
@@ -176,10 +183,10 @@ def store_dataset_items(hf, pdbid, bid, structures_data, contacts_data):
 if __name__ == "__main__":
     # set up dataset
     dataset = StructuresDataset(config_dataset['pdb_filepaths'], with_preprocessing=False)
-    dataloader = pt.utils.data.DataLoader(dataset, batch_size=None, shuffle=True, num_workers=16, pin_memory=False, prefetch_factor=4)
+    dataloader = pt.utils.data.DataLoader(dataset, batch_size=None, shuffle=True, num_workers=0, pin_memory=False, prefetch_factor=None)
 
     # define device
-    device = pt.device("cuda")
+    device = pt.device("cpu")
 
     # process structure, compute features and write dataset
     with h5py.File(config_dataset['dataset_filepath'], 'w', libver='latest') as hf:
@@ -202,10 +209,12 @@ if __name__ == "__main__":
             m = re.match(r'.*/([a-z0-9]*)\.pdb([0-9]*)\.gz', pdb_filepath)
             pdbid = m[1]
             bid = m[2]
-
             # check size
+
             if structure['xyz'].shape[0] >= config_dataset['max_num_atoms']:
+                # print("MAX ITEMS STRUCTURE - " , pdb_filepath)
                 continue
+
 
             # process structure
             structure = clean_structure(structure)
@@ -231,8 +240,10 @@ if __name__ == "__main__":
 
             # check there are contacts
             if len(contacts) == 0:
+                print("No contacts!")
                 continue
 
+            
             # pack dataset items
             structures_data, contacts_data = pack_dataset_items(
                 subunits, contacts,
@@ -245,10 +256,11 @@ if __name__ == "__main__":
             metadata_l.extend(metadata)
 
             # debug print
-            pbar.set_description(f"{metadata_l[-1]['key']}: {metadata_l[-1]['size']}")
+            # pbar.set_description(f"{metadata_l[-1]['key']}: {metadata_l[-1]['size']}")
 
         # store metadata
         hf['metadata/keys'] = np.array([m['key'] for m in metadata_l]).astype(np.string_)
         hf['metadata/sizes'] = np.array([m['size'] for m in metadata_l])
         hf['metadata/ckeys'] = np.array([m['ckey'] for m in metadata_l]).astype(np.string_)
         hf['metadata/ctypes'] = np.stack(np.where(np.array([m['ctype'] for m in metadata_l])), axis=1).astype(np.uint32)
+        print("Done")
